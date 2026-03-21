@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Django
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+static/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# React
+node_modules/
+build/
+.fleet/
+.idea/
+*.iml
+.DS_Store
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Secrets
+*.key
+*.pem
+*.crt
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.example
+
+# Secrets
+*.key
+*.pem
+*.crt
+
+# Database
+*.sqlite3
+*.db
+
+# Logs
+*.log
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
