@@ -111,11 +111,11 @@ class KYCVerification(models.Model):
         ('national_id', 'National ID'),
     ])
 
-    # Document uploads
-    id_front = models.ImageField(upload_to='kyc/id_front/')
-    id_back = models.ImageField(upload_to='kyc/id_back/')
-    selfie = models.ImageField(upload_to='kyc/selfie/')
-    proof_of_address = models.FileField(upload_to='kyc/address/', null=True, blank=True)
+    # Comment these out temporarily for deployment
+    # id_front = models.ImageField(upload_to='kyc/id_front/')
+    # id_back = models.ImageField(upload_to='kyc/id_back/')
+    # selfie = models.ImageField(upload_to='kyc/selfie/')
+    # proof_of_address = models.FileField(upload_to='kyc/address/', null=True, blank=True)
 
     # Metadata
     submitted_at = models.DateTimeField(auto_now_add=True)
