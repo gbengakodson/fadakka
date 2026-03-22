@@ -30,14 +30,15 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
-# CORS
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
     "https://fadakka-web.onrender.com",
-    "http://localhost:3000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+# For testing, temporarily allow all
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
