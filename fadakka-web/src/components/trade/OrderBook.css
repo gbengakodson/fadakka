@@ -1,0 +1,77 @@
+.order-book {
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.order-book h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.order-book-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 8px 0;
+  font-size: 12px;
+  color: #666;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.order-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 4px 0;
+  font-size: 12px;
+}
+
+.order-row .price {
+  font-weight: 500;
+}
+
+.ask .price {
+  color: #ef4444;
+}
+
+.bid .price {
+  color: #10b981;
+}
+
+.current-price-row {
+  text-align: center;
+  padding: 10px 0;
+  margin: 10px 0;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.current-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.asks, .bids {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.asks {
+  margin-bottom: 10px;
+}
+
+/* Scrollbar styling */
+.asks::-webkit-scrollbar, .bids::-webkit-scrollbar {
+  width: 4px;
+}
+
+.asks::-webkit-scrollbar-track, .bids::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.asks::-webkit-scrollbar-thumb, .bids::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 2px;
+}

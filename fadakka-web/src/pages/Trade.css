@@ -1,0 +1,297 @@
+/* src/pages/Trade.css */
+
+.trade-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  background: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.trade-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-btn {
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #333;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #e9ecef;
+}
+
+.coin-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coin-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.coin-info h1 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.coin-symbol {
+  font-size: 13px;
+  color: #666;
+  font-weight: normal;
+  margin-left: 4px;
+}
+
+.volatility-badge {
+  font-size: 11px;
+  color: #2563eb;
+  display: block;
+  margin-top: 2px;
+}
+
+.price-info {
+  text-align: right;
+}
+
+.current-price {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.price-change {
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.price-change.positive {
+  color: #10b981;
+}
+
+.price-change.negative {
+  color: #dc2626;
+}
+
+.trading-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+}
+
+.chart-section {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 16px;
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+.chart-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.chart-tabs button {
+  padding: 4px 12px;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #666;
+  cursor: pointer;
+}
+
+.chart-tabs button.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.order-book {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 16px;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  height: fit-content;
+}
+
+.order-book h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.order-book-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 6px 0;
+  font-size: 11px;
+  color: #666;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.order-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 4px 0;
+  font-size: 11px;
+}
+
+.ask .price {
+  color: #dc2626;
+}
+
+.bid .price {
+  color: #10b981;
+}
+
+.current-price-row {
+  text-align: center;
+  padding: 8px 0;
+  margin: 8px 0;
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.order-panel {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 20px;
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+}
+
+.order-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 8px;
+}
+
+.order-tabs button {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.order-tabs button.active {
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.grand-balance-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 20px;
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+}
+
+.grand-balance-card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.balance-amount {
+  font-size: 24px;
+  font-weight: 600;
+  color: #10b981;
+}
+
+.balance-note {
+  font-size: 11px;
+  color: #999;
+  margin-top: 4px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #666;
+}
+
+.error-container {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  color: #666;
+}
+
+@media (max-width: 1024px) {
+  .trading-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-section,
+  .order-book,
+  .order-panel,
+  .grand-balance-card {
+    grid-column: 1 / 2;
+  }
+
+  .order-book {
+    grid-row: 2 / 3;
+  }
+
+  .order-panel {
+    grid-row: 3 / 4;
+  }
+
+  .grand-balance-card {
+    grid-row: 4 / 5;
+  }
+
+  .trade-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .price-info {
+    text-align: left;
+    width: 100%;
+  }
+}

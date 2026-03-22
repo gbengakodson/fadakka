@@ -1,0 +1,466 @@
+/* KYCStatus.css */
+
+.kyc-status-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.kyc-status-card.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px;
+  color: #666;
+}
+
+.kyc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.kyc-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kyc-icon {
+  font-size: 24px;
+}
+
+.kyc-title h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.kyc-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.kyc-badge.verified {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.kyc-badge.pending {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.kyc-badge.rejected {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.kyc-badge.not-submitted {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.kyc-message {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.kyc-limits {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.limit-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.limit-label {
+  color: #666;
+}
+
+.limit-value {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.kyc-action-btn {
+  width: 100%;
+  padding: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.kyc-action-btn:hover {
+  background: #1d4ed8;
+}
+
+.kyc-pending-note {
+  background: #fff3e0;
+  border: 1px solid #ffe0b2;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 13px;
+  color: #f57c00;
+  text-align: center;
+}
+
+/* Modal Styles */
+.kyc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.kyc-modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.kyc-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e9ecef;
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.kyc-modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.kyc-modal-body {
+  padding: 24px;
+}
+
+.kyc-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid #e9ecef;
+  background: white;
+  position: sticky;
+  bottom: 0;
+}
+
+/* Progress Steps */
+.kyc-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  padding: 0 10px;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e9ecef;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.progress-step.active .step-number {
+  background: #2563eb;
+  color: white;
+}
+
+.step-label {
+  font-size: 11px;
+  color: #666;
+}
+
+.progress-step.active .step-label {
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.progress-line {
+  flex: 1;
+  height: 2px;
+  background: #e9ecef;
+  margin: 0 10px;
+  margin-bottom: 20px;
+}
+
+.progress-line.active {
+  background: #2563eb;
+}
+
+/* Form Styles */
+.kyc-step {
+  margin-bottom: 20px;
+}
+
+.kyc-step h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #555;
+  font-size: 13px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* Upload Styles */
+.upload-section {
+  margin-bottom: 20px;
+}
+
+.upload-label {
+  display: block;
+  padding: 16px;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 12px;
+}
+
+.upload-label:hover {
+  border-color: #2563eb;
+  background: #f8f9fa;
+}
+
+.upload-label span:first-child {
+  display: block;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-name {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #333;
+}
+
+.upload-note {
+  background: #f8f9fa;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 12px;
+  color: #666;
+}
+
+.upload-note p {
+  margin: 4px 0;
+}
+
+/* Review Styles */
+.review-box {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.review-box h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.review-box p {
+  margin: 8px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.review-box p strong {
+  color: #333;
+  width: 100px;
+  display: inline-block;
+}
+
+.terms-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.terms-checkbox input {
+  width: 16px;
+  height: 16px;
+}
+
+.terms-checkbox label {
+  font-size: 13px;
+  color: #555;
+}
+
+.kyc-error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-primary:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: white;
+  color: #666;
+  border: 1px solid #dee2e6;
+}
+
+.btn-secondary:hover {
+  background: #f8f9fa;
+}
+
+.spinner-small {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e9ecef;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .kyc-modal-content {
+    width: 95%;
+    margin: 10px;
+  }
+
+  .progress-step .step-label {
+    font-size: 10px;
+  }
+
+  .review-box p strong {
+    width: 80px;
+  }
+}
