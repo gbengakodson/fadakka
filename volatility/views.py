@@ -223,34 +223,34 @@ class BuyVolatilityTokenView(APIView):
             )
 
     def distribute_node_fees(self, user, node_fee, order):
-        """Distribute node fees through the 7-generation referral tree"""
+        """Distribute node fees using 50% cascading method"""
         current_user = user
-        commission_rates = {
-            1: 1.00,  # 100%
-            2: 0.20,  # 20%
-            3: 0.10,  # 10%
-            4: 0.07,  # 7%
-            5: 0.05,  # 5%
-            6: 0.03,  # 3%
-            7: 0.01  # 1%
-        }
-
-        # Keep track to avoid cycles
         processed_users = set()
 
-        for level in range(1, 8):
+        # Track remaining fee to distribute
+        remaining_fee = node_fee
+
+        # Distribution order: from bottom (generation 7) up to top (generation 0)
+        # Levels: 7,6,5,4,3,2,1,0 (you)
+
+        for level in range(7, -1, -1):  # 7 down to 0
             try:
-                # Get the referrer for current user
+                # Get the referrer at this level
                 referral_node = ReferralNode.objects.get(user=current_user)
 
-                if not referral_node.referrer or referral_node.referrer.id in processed_users:
-                    break
+                if level == 0:
+                    # Top of the network - you get all remaining
+                    referrer = current_user
+                    commission_amount = remaining_fee
+                else:
+                    # Move up the chain
+                    if not referral_node.referrer or referral_node.referrer.id in processed_users:
+                        continue
+                    referrer = referral_node.referrer
+                    processed_users.add(referrer.id)
 
-                referrer = referral_node.referrer
-                processed_users.add(referrer.id)
-
-                commission_rate = commission_rates[level]
-                commission_amount = node_fee * Decimal(str(commission_rate))
+                    # Calculate 50% of remaining
+                    commission_amount = remaining_fee * Decimal('0.5')
 
                 if commission_amount > 0:
                     # Create distribution record
@@ -258,10 +258,10 @@ class BuyVolatilityTokenView(APIView):
                         from_user=user,
                         to_user=referrer,
                         amount=commission_amount,
-                        level=level,
+                        level=level if level > 0 else 0,
                         purchase=order,
                         node_fee_total=node_fee,
-                        commission_percentage=commission_rate * 100
+                        commission_percentage=50 if level > 0 else 100
                     )
 
                     # Add to referrer's grand balance
@@ -269,22 +269,28 @@ class BuyVolatilityTokenView(APIView):
                     referrer_balance.balance_usdc += commission_amount
                     referrer_balance.save()
 
-                    # Update referrer's total earned in ReferralNode
+                    # Update referrer's total earned
                     referrer_node = ReferralNode.objects.get(user=referrer)
                     referrer_node.total_earned += commission_amount
                     referrer_node.save()
 
                     # Update referral stats
-                    self.update_referrer_stats(referrer, level, commission_amount)
+                    self.update_referrer_stats(referrer, level if level > 0 else 0, commission_amount)
 
-                    # Update the level_* JSON fields in referrer's node
-                    self.update_referral_levels(referrer_node, user.id, level)
+                    # Update downline tracking
+                    if level > 0:
+                        self.update_referral_levels(referrer_node, user.id, level)
 
-                # Move up the chain for next level
-                current_user = referrer
+                    # Subtract from remaining
+                    remaining_fee -= commission_amount
+
+                # Move up for next iteration
+                if level > 0 and referral_node.referrer:
+                    current_user = referral_node.referrer
 
             except ReferralNode.DoesNotExist:
                 break
+
 
     def update_referrer_stats(self, referrer, level, amount):
         """Update referral statistics for a referrer"""
