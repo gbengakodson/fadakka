@@ -30,10 +30,11 @@ CORS_ALLOWED_ORIGINS = [
     "https://fadakka.onrender.com",  # Your frontend URL
 ]
 
-CORS_ALLOW_CREDENTIALS = True
-
-# For testing, temporarily allow all
+# Force CORS settings
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+CORS_ALLOW_HEADERS = ['*']
 
 # Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
