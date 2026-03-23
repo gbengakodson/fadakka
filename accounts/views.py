@@ -12,6 +12,7 @@ import random
 import string
 from django.utils import timezone
 import logging
+from wallet.models import GrandBalance
 
 logger = logging.getLogger(__name__)
 
