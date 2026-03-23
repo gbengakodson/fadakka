@@ -25,9 +25,9 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
-# CORS settings
 CORS_ALLOWED_ORIGINS = [
     "https://fadakka-web.onrender.com",
+    "https://fadakka.onrender.com",  # Your frontend URL
 ]
 
 CORS_ALLOW_CREDENTIALS = True
