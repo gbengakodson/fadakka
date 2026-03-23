@@ -30,7 +30,7 @@ def home(request):
 
 urlpatterns = [
     # Admin
-    path('direct-test/', direct_test),
+
     path('admin/', admin.site.urls),
     path('', home, name='home'),
 
