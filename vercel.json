@@ -1,13 +1,4 @@
 {
-  "builds": [
-    {
-      "src": "fadakka-web/**",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
-    }
-  ],
   "buildCommand": "cd fadakka-web && npm install --legacy-peer-deps && npm run build",
   "outputDirectory": "fadakka-web/build",
   "installCommand": "cd fadakka-web && npm install --legacy-peer-deps"
