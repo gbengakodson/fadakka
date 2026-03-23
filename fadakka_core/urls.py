@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
-
+# Add this test view
+def test_view(request):
+    return HttpResponse("It works!")
 
 def home(request):
     return HttpResponse("""
@@ -29,6 +31,7 @@ urlpatterns = [
     # Admin
     path('admin/', admin.site.urls),
     path('', home, name='home'),
+    path('test/', test_view, name='test'),
 
     # Authentication
     path('api/auth/', include('accounts.urls')),
