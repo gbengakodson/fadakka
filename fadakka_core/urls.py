@@ -33,7 +33,6 @@ urlpatterns = [
     path('direct-test/', direct_test),
     path('admin/', admin.site.urls),
     path('', home, name='home'),
-    path('test/', test_view, name='test'),
 
     # Authentication
     path('api/auth/', include('accounts.urls')),
