@@ -22,6 +22,7 @@ def home(request):
             <li><a href="/api/referral/stats/">📊 Referral Stats</a></li>
             <li><a href="/api/referral/tree/">🌳 Referral Tree</a></li>
             <li><a href="/api/auth/profile/">👤 User Profile</a></li>
+            <li><a href="/api/auth/register/">📝 Register</a></li>
         </ul>
         <p style="margin-top: 20px; color: #666;">Server is running properly! ✅</p>
     """)
