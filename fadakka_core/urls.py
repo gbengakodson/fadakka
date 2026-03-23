@@ -28,6 +28,7 @@ def home(request):
 urlpatterns = [
     # Admin
     path('admin/', admin.site.urls),
+    path('', home, name='home'),
 
     # Authentication
     path('api/auth/', include('accounts.urls')),
