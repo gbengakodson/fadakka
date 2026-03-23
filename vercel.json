@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd fadakka-web && npm install --legacy-peer-deps && npm run build",
+  "outputDirectory": "fadakka-web/build",
+  "installCommand": "npm install --legacy-peer-deps",
+  "framework": "create-react-app"
+}
