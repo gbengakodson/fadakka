@@ -5,12 +5,7 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    'fadakka-api.onrender.com',
-    'fadakka-web.onrender.com',
-    'localhost',
-    '127.0.0.1',
-]
+ALLOWED_HOSTS = ['*']
 
 # Database
 DATABASES = {
