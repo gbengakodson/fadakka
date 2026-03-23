@@ -4,7 +4,7 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['fadakka-production.up.railway.app', 'localhost']
 
 # Database – use SQLite if DATABASE_URL is missing (for build phase)
 if os.environ.get('DATABASE_URL'):
