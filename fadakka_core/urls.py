@@ -38,16 +38,16 @@ urlpatterns = [
     path('api/auth/', include('accounts.urls')),
 
     # Wallet endpoints
-    #path('api/wallet/', include('wallet.urls')),
-    #path('api/wallet/', include('wallet.urls_usdc')),  # USDC transactions
-    #path('api/wallet/', include('wallet.urls_kyc')),
+    path('api/wallet/', include('wallet.urls')),
+    path('api/wallet/', include('wallet.urls_usdc')),  # USDC transactions
+    path('api/wallet/', include('wallet.urls_kyc')),
 
 
     # Volatility endpoints
-    #path('api/volatility/', include('volatility.urls')),
-    #path('api/volatility/', include('volatility.urls_yield')),
-    #path('api/volatility/', include('volatility.urls_yield_withdraw')),
+    path('api/volatility/', include('volatility.urls')),
+    path('api/volatility/', include('volatility.urls_yield')),
+    path('api/volatility/', include('volatility.urls_yield_withdraw')),
 
     # Referral endpoints - all referral URLs are now included
-    #path('api/referral/', include('referral.urls')),
+    path('api/referral/', include('referral.urls')),
 ]
