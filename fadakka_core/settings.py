@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'channels',
     'corsheaders',
-    'accounts',
     'wallet',
     'index_tracker',
     'volatility',
@@ -56,6 +55,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework_simplejwt',
     'notification',
+    'accounts',
 ]
 
 
