@@ -3,47 +3,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fadakka - Volatility Token Trading</title>
+    <title>Fadakka - Volatility Token Trading Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-        .card { border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .balance-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .navbar-brand { font-weight: bold; font-size: 1.5rem; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0.75rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link {
+            color: #64748b;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin: 0 4px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #2563eb;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        /* Cards */
+        .stat-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .stat-value.profit { color: #10b981; }
+        .stat-value.loss { color: #ef4444; }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 24px;
+        }
+
+        .balance-amount {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 16px 0;
+        }
+
+        /* Token Cards */
+        .token-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .token-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .token-symbol {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .token-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .price-change.positive { color: #10b981; }
+        .price-change.negative { color: #ef4444; }
+
+        /* Holdings Table */
+        .holdings-table {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+        }
+
+        .holdings-table th {
+            background: #f8f9fa;
+            padding: 16px;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .holdings-table td {
+            padding: 16px;
+            vertical-align: middle;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .profit-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .loss-badge {
+            background: #ffebee;
+            color: #c62828;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: #2563eb;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: #10b981;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Block-Node Returns Card */
+        .blocknode-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .blocknode-header {
+            background: #f8f9fa;
+            padding: 16px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .blocknode-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .blocknode-details {
+            padding: 20px;
+        }
+
+        .level-bar {
+            background: #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .level-fill {
+            background: #2563eb;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stat-value { font-size: 22px; }
+            .balance-amount { font-size: 28px; }
+            .holdings-table { font-size: 12px; }
+            .holdings-table th, .holdings-table td { padding: 10px; }
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+    <!-- Navigation -->
+    <nav class="navbar">
         <div class="container">
-            <a class="navbar-brand" href="#">🚀 Fadakka</a>
+            <a class="navbar-brand" href="#" onclick="showPage('dashboard')">
+                <i class="fas fa-chart-line me-2"></i>Fadakka
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto" id="nav-links">
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('dashboard')">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('trade')">Trade</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('portfolio')">Portfolio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="logout()" id="logout-btn" style="display:none">Logout</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('login')" id="login-btn">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('register')" id="register-btn">Register</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('trade')"><i class="fas fa-chart-line me-1"></i>Trade</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('portfolio')"><i class="fas fa-wallet me-1"></i>Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('yield')"><i class="fas fa-leaf me-1"></i>Yield</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('referral')"><i class="fas fa-users me-1"></i>Referral</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="logout()" id="logout-btn" style="display:none"><i class="fas fa-sign-out-alt me-1"></i>Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('login')" id="login-btn"><i class="fas fa-sign-in-alt me-1"></i>Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('register')" id="register-btn"><i class="fas fa-user-plus me-1"></i>Register</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4" id="app"></div>
+    <!-- Main Content -->
+    <div class="container py-4" id="app"></div>
 
     <script>
+        // API Configuration
         const API_URL = '';
         let currentUser = null;
         let authToken = localStorage.getItem('token');
 
+        // Helper functions
         const headers = () => ({
             'Content-Type': 'application/json',
             'Authorization': authToken ? `Bearer ${authToken}` : ''
         });
 
+        const formatCurrency = (value) => {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value || 0);
+        };
+
+        const formatToken = (value) => {
+            return parseFloat(value || 0).toFixed(4);
+        };
+
+        // Authentication
         async function checkAuth() {
             if (authToken) {
                 try {
@@ -65,77 +348,12 @@
             return false;
         }
 
-        function showPage(page) {
-            const app = document.getElementById('app');
-            if (page === 'login') renderLogin(app);
-            else if (page === 'register') renderRegister(app);
-            else if (page === 'dashboard') renderDashboard(app);
-            else if (page === 'trade') renderTrade(app);
-            else if (page === 'portfolio') renderPortfolio(app);
-        }
-
-        function renderLogin(container) {
-            container.innerHTML = `
-                <div class="row justify-content-center">
-                    <div class="col-md-4">
-                        <div class="card p-4">
-                            <h3 class="text-center mb-4">Login to Fadakka</h3>
-                            <div id="login-error" class="alert alert-danger d-none"></div>
-                            <div class="mb-3">
-                                <label>Username</label>
-                                <input type="text" id="login-username" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label>Password</label>
-                                <input type="password" id="login-password" class="form-control">
-                            </div>
-                            <button class="btn btn-primary w-100" onclick="login()">Login</button>
-                            <p class="text-center mt-3">Don't have an account? <a href="#" onclick="showPage('register')">Register</a></p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderRegister(container) {
-            container.innerHTML = `
-                <div class="row justify-content-center">
-                    <div class="col-md-4">
-                        <div class="card p-4">
-                            <h3 class="text-center mb-4">Create Account</h3>
-                            <div id="register-error" class="alert alert-danger d-none"></div>
-                            <div class="mb-3">
-                                <label>Username</label>
-                                <input type="text" id="reg-username" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label>Email</label>
-                                <input type="email" id="reg-email" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label>Password</label>
-                                <input type="password" id="reg-password" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label>Confirm Password</label>
-                                <input type="password" id="reg-password2" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label>Referral Code (Optional)</label>
-                                <input type="text" id="reg-ref" class="form-control">
-                            </div>
-                            <button class="btn btn-primary w-100" onclick="register()">Register</button>
-                            <p class="text-center mt-3">Already have an account? <a href="#" onclick="showPage('login')">Login</a></p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
         async function login() {
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
+            const username = document.getElementById('login-username')?.value;
+            const password = document.getElementById('login-password')?.value;
             const errorDiv = document.getElementById('login-error');
+            if (!username || !password) return;
+
             try {
                 const res = await fetch(`/api/auth/login/`, {
                     method: 'POST',
@@ -160,13 +378,14 @@
 
         async function register() {
             const userData = {
-                username: document.getElementById('reg-username').value,
-                email: document.getElementById('reg-email').value,
-                password: document.getElementById('reg-password').value,
-                password2: document.getElementById('reg-password2').value,
-                referral_code: document.getElementById('reg-ref').value
+                username: document.getElementById('reg-username')?.value,
+                email: document.getElementById('reg-email')?.value,
+                password: document.getElementById('reg-password')?.value,
+                password2: document.getElementById('reg-password2')?.value,
+                referral_code: document.getElementById('reg-ref')?.value || ''
             };
             const errorDiv = document.getElementById('register-error');
+
             try {
                 const res = await fetch(`/api/auth/register/`, {
                     method: 'POST',
@@ -187,62 +406,266 @@
             }
         }
 
+        function logout() {
+            localStorage.removeItem('token');
+            authToken = null;
+            currentUser = null;
+            checkAuth();
+        }
+
+        // Page Rendering
+        function showPage(page) {
+            const app = document.getElementById('app');
+            if (page === 'login') renderLogin(app);
+            else if (page === 'register') renderRegister(app);
+            else if (page === 'dashboard') renderDashboard(app);
+            else if (page === 'trade') renderTrade(app);
+            else if (page === 'portfolio') renderPortfolio(app);
+            else if (page === 'yield') renderYield(app);
+            else if (page === 'referral') renderReferral(app);
+        }
+
+        // Login Page
+        function renderLogin(container) {
+            container.innerHTML = `
+                <div class="row justify-content-center">
+                    <div class="col-md-5">
+                        <div class="stat-card">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-chart-line fa-3x" style="color: #2563eb;"></i>
+                                <h3 class="mt-3">Welcome to Fadakka</h3>
+                                <p class="text-muted">Trade volatility tokens and earn yield</p>
+                            </div>
+                            <div id="login-error" class="alert alert-danger d-none"></div>
+                            <div class="mb-3">
+                                <label class="form-label">Username</label>
+                                <input type="text" id="login-username" class="form-control" placeholder="Enter your username">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" id="login-password" class="form-control" placeholder="Enter your password">
+                            </div>
+                            <button class="btn btn-primary w-100" onclick="login()">Login</button>
+                            <hr class="my-4">
+                            <p class="text-center mb-0">Don't have an account? <a href="#" onclick="showPage('register')">Create one</a></p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Register Page
+        function renderRegister(container) {
+            container.innerHTML = `
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-user-plus fa-3x" style="color: #2563eb;"></i>
+                                <h3 class="mt-3">Create Account</h3>
+                                <p class="text-muted">Join the volatility trading revolution</p>
+                            </div>
+                            <div id="register-error" class="alert alert-danger d-none"></div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" id="reg-username" class="form-control">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" id="reg-email" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" id="reg-password" class="form-control">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Confirm Password</label>
+                                    <input type="password" id="reg-password2" class="form-control">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Referral Code (Optional)</label>
+                                <input type="text" id="reg-ref" class="form-control" placeholder="Enter referral code">
+                            </div>
+                            <button class="btn btn-primary w-100" onclick="register()">Register</button>
+                            <hr class="my-4">
+                            <p class="text-center mb-0">Already have an account? <a href="#" onclick="showPage('login')">Login</a></p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Dashboard Page
         async function renderDashboard(container) {
+            container.innerHTML = `<div class="text-center py-5"><div class="spinner"></div><p>Loading dashboard...</p></div>`;
+
             try {
-                const balanceRes = await fetch(`/api/wallet/grand-balance/`, { headers: headers() });
+                const [balanceRes, holdingsRes, referralRes] = await Promise.all([
+                    fetch(`/api/wallet/grand-balance/`, { headers: headers() }),
+                    fetch(`/api/volatility/user-tokens/`, { headers: headers() }),
+                    fetch(`/api/referral/network/`, { headers: headers() })
+                ]);
+
                 const balance = await balanceRes.json();
+                const holdings = await holdingsRes.json();
+                const referral = await referralRes.json();
+
+                const portfolioValue = holdings.reduce((sum, h) => sum + (h.balance * h.current_price), 0);
+
                 container.innerHTML = `
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="card balance-card p-4 mb-3">
-                                <h5>GrandBalance</h5>
-                                <h2>$${(balance.balance_usdc || 0).toFixed(2)}</h2>
+                        <div class="col-lg-8">
+                            <div class="balance-card">
+                                <h5><i class="fas fa-wallet me-2"></i>GrandBalance</h5>
+                                <div class="balance-amount">${formatCurrency(balance.balance_usdc)}</div>
+                                <button class="btn btn-light" onclick="showPage('trade')">Start Trading <i class="fas fa-arrow-right ms-2"></i></button>
                             </div>
                         </div>
-                        <div class="col-md-8">
-                            <div class="card p-4">
-                                <h5>Welcome back, ${currentUser?.username || 'User'}!</h5>
-                                <p>Start trading volatility tokens and earn yield.</p>
-                                <button class="btn btn-primary" onclick="showPage('trade')">Start Trading</button>
+                        <div class="col-lg-4">
+                            <div class="stat-card text-center">
+                                <div class="stat-icon">📊</div>
+                                <div class="stat-label">Portfolio Value</div>
+                                <div class="stat-value">${formatCurrency(portfolioValue)}</div>
+                                <small class="text-muted">${holdings.length} tokens</small>
                             </div>
                         </div>
                     </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">💰</div>
+                                <div class="stat-label">Total Assets</div>
+                                <div class="stat-value">${formatCurrency((balance.balance_usdc || 0) + portfolioValue)}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">👥</div>
+                                <div class="stat-label">Referral Earnings</div>
+                                <div class="stat-value">${formatCurrency(referral.total_earned || 0)}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">🌱</div>
+                                <div class="stat-label">Yield Earned</div>
+                                <div class="stat-value">${formatCurrency(holdings.reduce((s, h) => s + (h.yield_earned_total || 0), 0))}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${holdings.length > 0 ? `
+                    <div class="holdings-table mt-4">
+                        <div class="p-3 bg-light border-bottom">
+                            <h5 class="mb-0"><i class="fas fa-chart-simple me-2"></i>Your Top Holdings</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr><th>Token</th><th>Balance</th><th>Value</th><th>P&L</th><th></th></tr>
+                                </thead>
+                                <tbody>
+                                    ${holdings.slice(0, 3).map(h => {
+                                        const value = h.balance * h.current_price;
+                                        const pl = value - (h.balance * h.purchase_price);
+                                        return `<tr>
+                                            <td><strong>${h.token_symbol}</strong><br><small class="text-muted">${h.token_name}</small></td>
+                                            <td>${formatToken(h.balance)}</td>
+                                            <td>${formatCurrency(value)}</td>
+                                            <td class="${pl >= 0 ? 'text-success' : 'text-danger'}">${pl >= 0 ? '+' : ''}${formatCurrency(pl)}</td>
+                                            <td><button class="btn btn-sm btn-outline-primary" onclick="showPage('trade')">Trade</button></td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    ` : `
+                    <div class="text-center py-5">
+                        <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                        <p>No holdings yet. Start trading to build your portfolio!</p>
+                        <button class="btn btn-primary" onclick="showPage('trade')">Start Trading</button>
+                    </div>
+                    `}
                 `;
             } catch(e) {
                 container.innerHTML = `<div class="alert alert-danger">Error loading dashboard</div>`;
             }
         }
 
+        // Trade Page
         async function renderTrade(container) {
-            container.innerHTML = `<div class="text-center"><div class="spinner-border"></div> Loading tokens...</div>`;
+            container.innerHTML = `<div class="text-center py-5"><div class="spinner"></div><p>Loading tokens...</p></div>`;
+
             try {
-                const tokensRes = await fetch(`/api/volatility/tokens/`, { headers: headers() });
+                const [tokensRes, balanceRes] = await Promise.all([
+                    fetch(`/api/volatility/tokens/`, { headers: headers() }),
+                    fetch(`/api/wallet/grand-balance/`, { headers: headers() })
+                ]);
+
                 const tokens = await tokensRes.json();
-                let html = `<div class="row"><div class="col-12"><h3>Available Volatility Tokens</h3></div>`;
-                for (const token of tokens) {
-                    html += `
-                        <div class="col-md-4 mb-3">
-                            <div class="card p-3">
-                                <h4>${token.token_symbol}</h4>
-                                <p>$${token.current_price}</p>
-                                <div class="input-group mb-2">
-                                    <input type="number" id="amount-${token.id}" class="form-control" placeholder="Amount">
-                                    <button class="btn btn-success" onclick="buyToken(${token.id}, ${token.current_price})">Buy</button>
-                                </div>
+                const balance = await balanceRes.json();
+
+                container.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="balance-card">
+                                <h5><i class="fas fa-wallet me-2"></i>GrandBalance</h5>
+                                <div class="balance-amount">${formatCurrency(balance.balance_usdc)}</div>
+                                <small>Available for trading</small>
                             </div>
                         </div>
-                    `;
-                }
-                html += `</div>`;
-                container.innerHTML = html;
+                        <div class="col-md-8">
+                            <div class="stat-card">
+                                <h5><i class="fas fa-chart-line me-2"></i>Volatility Tokens</h5>
+                                <p class="text-muted">Buy tokens and earn yield automatically</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        ${tokens.map(token => `
+                            <div class="col-md-6 col-lg-4 mb-4">
+                                <div class="token-card">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <div class="token-symbol">${token.token_symbol}</div>
+                                            <div class="text-muted small">${token.name}</div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="token-price">${formatCurrency(token.current_price)}</div>
+                                            <div class="price-change ${token.price_change_24h >= 0 ? 'positive' : 'negative'}">
+                                                ${token.price_change_24h >= 0 ? '+' : ''}${token.price_change_24h?.toFixed(2)}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="number" id="amount-${token.id}" class="form-control" placeholder="Amount (USDC)">
+                                        <button class="btn btn-success" onclick="buyToken(${token.id}, ${token.current_price})">Buy</button>
+                                    </div>
+                                    <div class="small text-muted">
+                                        <i class="fas fa-percent"></i> Node fee: 10%
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
             } catch(e) {
                 container.innerHTML = `<div class="alert alert-danger">Error loading tokens</div>`;
             }
         }
 
+        // Buy Token
         async function buyToken(tokenId, price) {
             const amount = document.getElementById(`amount-${tokenId}`).value;
-            if (!amount) return alert('Enter amount');
+            if (!amount || amount <= 0) return alert('Please enter a valid amount');
+
             try {
                 const res = await fetch(`/api/volatility/buy/`, {
                     method: 'POST',
@@ -251,7 +674,7 @@
                 });
                 const data = await res.json();
                 if (res.ok) {
-                    alert(`Successfully bought ${amount} tokens!`);
+                    alert(`✅ Successfully bought ${amount} tokens!`);
                     showPage('dashboard');
                 } else {
                     alert(data.error || 'Purchase failed');
@@ -261,30 +684,107 @@
             }
         }
 
+        // Portfolio Page
         async function renderPortfolio(container) {
-            container.innerHTML = `<div class="text-center"><div class="spinner-border"></div> Loading portfolio...</div>`;
+            container.innerHTML = `<div class="text-center py-5"><div class="spinner"></div><p>Loading portfolio...</p></div>`;
+
             try {
                 const holdingsRes = await fetch(`/api/volatility/user-tokens/`, { headers: headers() });
                 const holdings = await holdingsRes.json();
+
                 if (holdings.length === 0) {
-                    container.innerHTML = `<div class="alert alert-info">No holdings yet. <a href="#" onclick="showPage('trade')">Start trading</a></div>`;
+                    container.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                            <h4>No Holdings Yet</h4>
+                            <p>Start trading volatility tokens to build your portfolio</p>
+                            <button class="btn btn-primary" onclick="showPage('trade')">Start Trading</button>
+                        </div>
+                    `;
                     return;
                 }
-                let html = `<div class="card"><div class="card-body"><h3>Your Holdings</h3><div class="table-responsive"><table class="table"><thead><tr><th>Token</th><th>Balance</th><th>Current Price</th><th>Value</th><th>Action</th></tr></thead><tbody>`;
-                for (const h of holdings) {
-                    const value = h.balance * h.current_price;
-                    html += `<tr><td>${h.token_symbol}</td><td>${parseFloat(h.balance).toFixed(4)}</td><td>$${parseFloat(h.current_price).toFixed(2)}</td><td>$${value.toFixed(2)}</td><td><button class="btn btn-sm btn-danger" onclick="sellToken(${h.id}, ${h.current_price})">Sell</button></td></tr>`;
-                }
-                html += `</tbody></table></div></div></div>`;
-                container.innerHTML = html;
+
+                const totalValue = holdings.reduce((s, h) => s + (h.balance * h.current_price), 0);
+                const totalInvested = holdings.reduce((s, h) => s + (h.balance * h.purchase_price), 0);
+                const totalProfit = totalValue - totalInvested;
+
+                container.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">📊</div>
+                                <div class="stat-label">Portfolio Value</div>
+                                <div class="stat-value">${formatCurrency(totalValue)}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">💰</div>
+                                <div class="stat-label">Total Invested</div>
+                                <div class="stat-value">${formatCurrency(totalInvested)}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">📈</div>
+                                <div class="stat-label">Total P&L</div>
+                                <div class="stat-value ${totalProfit >= 0 ? 'profit' : 'loss'}">
+                                    ${totalProfit >= 0 ? '+' : ''}${formatCurrency(totalProfit)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="holdings-table mt-3">
+                        <div class="p-3 bg-light border-bottom">
+                            <h5 class="mb-0"><i class="fas fa-list me-2"></i>Your Holdings</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Token</th>
+                                        <th>Balance</th>
+                                        <th>Avg Price</th>
+                                        <th>Current Price</th>
+                                        <th>Value</th>
+                                        <th>P&L</th>
+                                        <th>P&L %</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${holdings.map(h => {
+                                        const value = h.balance * h.current_price;
+                                        const cost = h.balance * h.purchase_price;
+                                        const pl = value - cost;
+                                        const plPercent = cost > 0 ? (pl / cost) * 100 : 0;
+                                        return `<tr>
+                                            <td><strong>${h.token_symbol}</strong><br><small>${h.token_name}</small></td>
+                                            <td>${formatToken(h.balance)}</td>
+                                            <td>${formatCurrency(h.purchase_price)}</td>
+                                            <td>${formatCurrency(h.current_price)}</td>
+                                            <td>${formatCurrency(value)}</td>
+                                            <td class="${pl >= 0 ? 'text-success' : 'text-danger'}">${pl >= 0 ? '+' : ''}${formatCurrency(pl)}</td>
+                                            <td class="${pl >= 0 ? 'text-success' : 'text-danger'}">${pl >= 0 ? '+' : ''}${plPercent.toFixed(2)}%</td>
+                                            <td><button class="btn btn-sm btn-danger" onclick="sellToken(${h.id}, ${h.current_price})">Sell</button></td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
             } catch(e) {
                 container.innerHTML = `<div class="alert alert-danger">Error loading portfolio</div>`;
             }
         }
 
+        // Sell Token
         async function sellToken(holdingId, price) {
             const amount = prompt('Enter amount to sell:');
-            if (!amount) return;
+            if (!amount || amount <= 0) return;
+
             try {
                 const res = await fetch(`/api/volatility/sell/`, {
                     method: 'POST',
@@ -293,7 +793,7 @@
                 });
                 const data = await res.json();
                 if (res.ok) {
-                    alert(`Successfully sold ${amount} tokens!`);
+                    alert(`✅ Successfully sold ${amount} tokens!`);
                     showPage('portfolio');
                 } else {
                     alert(data.error || 'Sale failed');
@@ -303,13 +803,205 @@
             }
         }
 
-        function logout() {
-            localStorage.removeItem('token');
-            authToken = null;
-            currentUser = null;
-            checkAuth();
+        // Yield Page
+        async function renderYield(container) {
+            container.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                    <h4>Yield Dashboard</h4>
+                    <p>Track your yield earnings from volatility tokens</p>
+                    <div class="spinner"></div>
+                    <p class="mt-3">Loading yield data...</p>
+                </div>
+            `;
+
+            try {
+                const holdingsRes = await fetch(`/api/volatility/user-tokens/`, { headers: headers() });
+                const holdings = await holdingsRes.json();
+                const totalYield = holdings.reduce((s, h) => s + (h.yield_earned_total || 0), 0);
+                const portfolioValue = holdings.reduce((s, h) => s + (h.balance * h.current_price), 0);
+
+                container.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">🌱</div>
+                                <div class="stat-label">Total Yield Earned</div>
+                                <div class="stat-value profit">${formatCurrency(totalYield)}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">📊</div>
+                                <div class="stat-label">Portfolio Value</div>
+                                <div class="stat-value">${formatCurrency(portfolioValue)}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">📈</div>
+                                <div class="stat-label">Projected Annual Yield</div>
+                                <div class="stat-value">${formatCurrency(portfolioValue * 0.08)} - ${formatCurrency(portfolioValue * 0.10)}</div>
+                                <small class="text-muted">8-10% of portfolio value</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${holdings.length > 0 ? `
+                    <div class="holdings-table mt-3">
+                        <div class="p-3 bg-light border-bottom">
+                            <h5 class="mb-0"><i class="fas fa-leaf me-2"></i>Yield by Token</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr><th>Token</th><th>Balance</th><th>Yield Earned</th><th>Current Value</th><th>Action</th></tr>
+                                </thead>
+                                <tbody>
+                                    ${holdings.map(h => `
+                                        <tr>
+                                            <td><strong>${h.token_symbol}</strong></td>
+                                            <td>${formatToken(h.balance)}</td>
+                                            <td class="text-success">${formatCurrency(h.yield_earned_total || 0)}</td>
+                                            <td>${formatCurrency(h.balance * h.current_price)}</td>
+                                            <td><button class="btn btn-sm btn-primary" onclick="showPage('trade')">Trade</button></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    ` : '<div class="text-center py-4"><p class="text-muted">No tokens yet. Buy tokens to start earning yield!</p></div>'}
+                `;
+            } catch(e) {
+                container.innerHTML = `<div class="alert alert-danger">Error loading yield data</div>`;
+            }
         }
 
+        // Referral Page
+        async function renderReferral(container) {
+            container.innerHTML = `<div class="text-center py-5"><div class="spinner"></div><p>Loading referral data...</p></div>`;
+
+            try {
+                const referralRes = await fetch(`/api/referral/network/`, { headers: headers() });
+                const referral = await referralRes.json();
+
+                container.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-12 mb-4">
+                            <div class="balance-card text-center">
+                                <h5><i class="fas fa-link me-2"></i>Your Referral Code</h5>
+                                <div class="display-6 mb-2">${referral.referral_code || 'Loading...'}</div>
+                                <button class="btn btn-light" onclick="copyReferralCode('${referral.referral_code}')">
+                                    <i class="fas fa-copy me-2"></i>Copy Code
+                                </button>
+                                <p class="mt-3 mb-0 small">Share this code with friends and earn commissions</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card text-center">
+                                <div class="stat-icon">💰</div>
+                                <div class="stat-label">Total Earned</div>
+                                <div class="stat-value">${formatCurrency(referral.total_earned || 0)}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card text-center">
+                                <div class="stat-icon">👥</div>
+                                <div class="stat-label">Active Referrals</div>
+                                <div class="stat-value">${referral.active_referrals || 0}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card text-center">
+                                <div class="stat-icon">📊</div>
+                                <div class="stat-label">Conversion Rate</div>
+                                <div class="stat-value">${referral.conversion_rate || 0}%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="blocknode-card">
+                        <div class="blocknode-header" onclick="toggleBlockNodeDetails()">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3><i class="fas fa-diagram-project me-2"></i>Block-Node Returns (7-Generation)</h3>
+                                <i class="fas fa-chevron-down" id="blocknode-icon"></i>
+                            </div>
+                        </div>
+                        <div id="blocknode-details" class="blocknode-details" style="display: none;">
+                            <div class="row">
+                                ${[1,2,3,4,5,6,7].map(level => {
+                                    const count = referral.downlines?.[`level_${level}`] || 0;
+                                    const rates = {1:100,2:20,3:10,4:7,5:5,6:3,7:1};
+                                    return `
+                                    <div class="col-md-6 col-lg-3 mb-3">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                                <h6 class="text-muted">Generation ${level}</h6>
+                                                <div class="display-6">${count}</div>
+                                                <small class="text-success">${rates[level]}% commission</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                            <div class="alert alert-info mt-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Earn commissions from 7 generations of referrals. When someone trades using your code, you earn from their node fees!
+                            </div>
+                        </div>
+                    </div>
+
+                    ${referral.recent_earnings?.length > 0 ? `
+                    <div class="holdings-table mt-3">
+                        <div class="p-3 bg-light border-bottom">
+                            <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Recent Earnings</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead><tr><th>Date</th><th>From</th><th>Level</th><th>Amount</th></tr></thead>
+                                <tbody>
+                                    ${referral.recent_earnings.map(e => `
+                                        <tr>
+                                            <td>${new Date(e.date).toLocaleDateString()}</td>
+                                            <td>${e.from}</td>
+                                            <td>Level ${e.level}</td>
+                                            <td class="text-success">+${formatCurrency(e.amount)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    ` : '<div class="text-center py-4"><p class="text-muted">No referral earnings yet. Share your code to start earning!</p></div>'}
+                `;
+            } catch(e) {
+                container.innerHTML = `<div class="alert alert-danger">Error loading referral data</div>`;
+            }
+        }
+
+        function copyReferralCode(code) {
+            navigator.clipboard.writeText(code);
+            alert('Referral code copied to clipboard!');
+        }
+
+        function toggleBlockNodeDetails() {
+            const details = document.getElementById('blocknode-details');
+            const icon = document.getElementById('blocknode-icon');
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                details.style.display = 'none';
+                icon.style.transform = 'rotate(0)';
+            }
+        }
+
+        // Initialize
         checkAuth();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
