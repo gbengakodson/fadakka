@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fadakka - Volatility Token Trading</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .card { border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .balance-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .navbar-brand { font-weight: bold; font-size: 1.5rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">🚀 Fadakka</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto" id="nav-links">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('dashboard')">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('trade')">Trade</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('portfolio')">Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="logout()" id="logout-btn" style="display:none">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('login')" id="login-btn">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('register')" id="register-btn">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4" id="app"></div>
+
+    <script>
+        const API_URL = '';
+        let currentUser = null;
+        let authToken = localStorage.getItem('token');
+
+        const headers = () => ({
+            'Content-Type': 'application/json',
+            'Authorization': authToken ? `Bearer ${authToken}` : ''
+        });
+
+        async function checkAuth() {
+            if (authToken) {
+                try {
+                    const res = await fetch(`/api/auth/profile/`, { headers: headers() });
+                    if (res.ok) {
+                        currentUser = await res.json();
+                        document.getElementById('login-btn').style.display = 'none';
+                        document.getElementById('register-btn').style.display = 'none';
+                        document.getElementById('logout-btn').style.display = 'block';
+                        showPage('dashboard');
+                        return true;
+                    }
+                } catch(e) { console.error(e); }
+            }
+            document.getElementById('login-btn').style.display = 'block';
+            document.getElementById('register-btn').style.display = 'block';
+            document.getElementById('logout-btn').style.display = 'none';
+            showPage('login');
+            return false;
+        }
+
+        function showPage(page) {
+            const app = document.getElementById('app');
+            if (page === 'login') renderLogin(app);
+            else if (page === 'register') renderRegister(app);
+            else if (page === 'dashboard') renderDashboard(app);
+            else if (page === 'trade') renderTrade(app);
+            else if (page === 'portfolio') renderPortfolio(app);
+        }
+
+        function renderLogin(container) {
+            container.innerHTML = `
+                <div class="row justify-content-center">
+                    <div class="col-md-4">
+                        <div class="card p-4">
+                            <h3 class="text-center mb-4">Login to Fadakka</h3>
+                            <div id="login-error" class="alert alert-danger d-none"></div>
+                            <div class="mb-3">
+                                <label>Username</label>
+                                <input type="text" id="login-username" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label>Password</label>
+                                <input type="password" id="login-password" class="form-control">
+                            </div>
+                            <button class="btn btn-primary w-100" onclick="login()">Login</button>
+                            <p class="text-center mt-3">Don't have an account? <a href="#" onclick="showPage('register')">Register</a></p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRegister(container) {
+            container.innerHTML = `
+                <div class="row justify-content-center">
+                    <div class="col-md-4">
+                        <div class="card p-4">
+                            <h3 class="text-center mb-4">Create Account</h3>
+                            <div id="register-error" class="alert alert-danger d-none"></div>
+                            <div class="mb-3">
+                                <label>Username</label>
+                                <input type="text" id="reg-username" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label>Email</label>
+                                <input type="email" id="reg-email" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label>Password</label>
+                                <input type="password" id="reg-password" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label>Confirm Password</label>
+                                <input type="password" id="reg-password2" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label>Referral Code (Optional)</label>
+                                <input type="text" id="reg-ref" class="form-control">
+                            </div>
+                            <button class="btn btn-primary w-100" onclick="register()">Register</button>
+                            <p class="text-center mt-3">Already have an account? <a href="#" onclick="showPage('login')">Login</a></p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const errorDiv = document.getElementById('login-error');
+            try {
+                const res = await fetch(`/api/auth/login/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    authToken = data.access;
+                    localStorage.setItem('token', authToken);
+                    currentUser = data.user;
+                    checkAuth();
+                } else {
+                    errorDiv.textContent = data.error || 'Login failed';
+                    errorDiv.classList.remove('d-none');
+                }
+            } catch (err) {
+                errorDiv.textContent = 'Network error';
+                errorDiv.classList.remove('d-none');
+            }
+        }
+
+        async function register() {
+            const userData = {
+                username: document.getElementById('reg-username').value,
+                email: document.getElementById('reg-email').value,
+                password: document.getElementById('reg-password').value,
+                password2: document.getElementById('reg-password2').value,
+                referral_code: document.getElementById('reg-ref').value
+            };
+            const errorDiv = document.getElementById('register-error');
+            try {
+                const res = await fetch(`/api/auth/register/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+                if (res.ok) {
+                    alert('Registration successful! Please login.');
+                    showPage('login');
+                } else {
+                    const data = await res.json();
+                    errorDiv.textContent = data.error || Object.values(data).flat().join(', ');
+                    errorDiv.classList.remove('d-none');
+                }
+            } catch (err) {
+                errorDiv.textContent = 'Network error';
+                errorDiv.classList.remove('d-none');
+            }
+        }
+
+        async function renderDashboard(container) {
+            try {
+                const balanceRes = await fetch(`/api/wallet/grand-balance/`, { headers: headers() });
+                const balance = await balanceRes.json();
+                container.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card balance-card p-4 mb-3">
+                                <h5>GrandBalance</h5>
+                                <h2>$${(balance.balance_usdc || 0).toFixed(2)}</h2>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card p-4">
+                                <h5>Welcome back, ${currentUser?.username || 'User'}!</h5>
+                                <p>Start trading volatility tokens and earn yield.</p>
+                                <button class="btn btn-primary" onclick="showPage('trade')">Start Trading</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } catch(e) {
+                container.innerHTML = `<div class="alert alert-danger">Error loading dashboard</div>`;
+            }
+        }
+
+        async function renderTrade(container) {
+            container.innerHTML = `<div class="text-center"><div class="spinner-border"></div> Loading tokens...</div>`;
+            try {
+                const tokensRes = await fetch(`/api/volatility/tokens/`, { headers: headers() });
+                const tokens = await tokensRes.json();
+                let html = `<div class="row"><div class="col-12"><h3>Available Volatility Tokens</h3></div>`;
+                for (const token of tokens) {
+                    html += `
+                        <div class="col-md-4 mb-3">
+                            <div class="card p-3">
+                                <h4>${token.token_symbol}</h4>
+                                <p>$${token.current_price}</p>
+                                <div class="input-group mb-2">
+                                    <input type="number" id="amount-${token.id}" class="form-control" placeholder="Amount">
+                                    <button class="btn btn-success" onclick="buyToken(${token.id}, ${token.current_price})">Buy</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                html += `</div>`;
+                container.innerHTML = html;
+            } catch(e) {
+                container.innerHTML = `<div class="alert alert-danger">Error loading tokens</div>`;
+            }
+        }
+
+        async function buyToken(tokenId, price) {
+            const amount = document.getElementById(`amount-${tokenId}`).value;
+            if (!amount) return alert('Enter amount');
+            try {
+                const res = await fetch(`/api/volatility/buy/`, {
+                    method: 'POST',
+                    headers: headers(),
+                    body: JSON.stringify({ token_id: tokenId, amount: parseFloat(amount), price: price })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(`Successfully bought ${amount} tokens!`);
+                    showPage('dashboard');
+                } else {
+                    alert(data.error || 'Purchase failed');
+                }
+            } catch(e) {
+                alert('Network error');
+            }
+        }
+
+        async function renderPortfolio(container) {
+            container.innerHTML = `<div class="text-center"><div class="spinner-border"></div> Loading portfolio...</div>`;
+            try {
+                const holdingsRes = await fetch(`/api/volatility/user-tokens/`, { headers: headers() });
+                const holdings = await holdingsRes.json();
+                if (holdings.length === 0) {
+                    container.innerHTML = `<div class="alert alert-info">No holdings yet. <a href="#" onclick="showPage('trade')">Start trading</a></div>`;
+                    return;
+                }
+                let html = `<div class="card"><div class="card-body"><h3>Your Holdings</h3><div class="table-responsive"><table class="table"><thead><tr><th>Token</th><th>Balance</th><th>Current Price</th><th>Value</th><th>Action</th></tr></thead><tbody>`;
+                for (const h of holdings) {
+                    const value = h.balance * h.current_price;
+                    html += `<tr><td>${h.token_symbol}</td><td>${parseFloat(h.balance).toFixed(4)}</td><td>$${parseFloat(h.current_price).toFixed(2)}</td><td>$${value.toFixed(2)}</td><td><button class="btn btn-sm btn-danger" onclick="sellToken(${h.id}, ${h.current_price})">Sell</button></td></tr>`;
+                }
+                html += `</tbody></table></div></div></div>`;
+                container.innerHTML = html;
+            } catch(e) {
+                container.innerHTML = `<div class="alert alert-danger">Error loading portfolio</div>`;
+            }
+        }
+
+        async function sellToken(holdingId, price) {
+            const amount = prompt('Enter amount to sell:');
+            if (!amount) return;
+            try {
+                const res = await fetch(`/api/volatility/sell/`, {
+                    method: 'POST',
+                    headers: headers(),
+                    body: JSON.stringify({ holding_id: holdingId, amount: parseFloat(amount), price: price })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(`Successfully sold ${amount} tokens!`);
+                    showPage('portfolio');
+                } else {
+                    alert(data.error || 'Sale failed');
+                }
+            } catch(e) {
+                alert('Network error');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            authToken = null;
+            currentUser = null;
+            checkAuth();
+        }
+
+        checkAuth();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
